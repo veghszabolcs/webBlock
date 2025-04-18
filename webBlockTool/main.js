@@ -3,6 +3,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import CubeWithEdges from './CubeWithEdges.js';
 import Floor from './GridFloor.js';
 
+/////globals///////
+var activeTool = "cameraTool"; document.getElementById(activeTool).style.backgroundColor = "white"; document.getElementById(activeTool).style.color = "black";
+
 //////////
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -29,7 +32,7 @@ scene.add(cube);
 camera.position.z = 5;
 ///////////
 
-function initLight(){
+function initLight() {
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(5, 5, 5).normalize();
     scene.add(light);
@@ -53,7 +56,12 @@ window.addEventListener('keydown', (event) => {
 
 window.addEventListener('click', (event) => {
 
-    if (event.button !== 0) return;
+    const menu = document.getElementById('menu');
+    const tools = document.getElementById('tools');
+    const info = document.getElementById('info');
+    if (menu.contains(event.target) || tools.contains(event.target) || info.contains(event.target) || event.button !== 0 || activeTool === "cameraTool") {
+        return;
+    }
 
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
@@ -70,6 +78,23 @@ window.addEventListener('click', (event) => {
         if (selectedObject.parent instanceof CubeWithEdges) {
             console.log("You clicked on the cube!");
             selectedObject.parent.setEdgeColor(0xff0000);
-        } 
+        }
     }
+});
+
+tools.addEventListener('click', (event) => {
+
+    if (event.target !== event.currentTarget) {
+        const lastTool = activeTool;
+        activeTool = event.target.id;
+
+        if (lastTool !== activeTool) {
+            document.getElementById(lastTool).style.backgroundColor = "transparent"; 
+            document.getElementById(lastTool).style.color = "white";
+
+            document.getElementById(activeTool).style.backgroundColor = "white";
+            document.getElementById(activeTool).style.color = "black";
+        }
+    }
+
 });
