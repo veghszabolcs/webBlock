@@ -5,6 +5,7 @@ import Floor from './GridFloor.js';
 
 /////globals///////
 var activeTool = "cameraTool"; document.getElementById(activeTool).style.backgroundColor = "white"; document.getElementById(activeTool).style.color = "black";
+var selectedObject = null; 
 
 //////////
 const scene = new THREE.Scene();
@@ -24,8 +25,12 @@ const mouse = new THREE.Vector2();
 initLight();
 
 const floor = new Floor();
-const cube = new CubeWithEdges(1, 0x5e1f61, 0xffffff)
+const cube = new CubeWithEdges(1, 0x5e1f61, 0xffffff);
 
+const cube2 = new CubeWithEdges(1, 0x2ac984, 0xffffff);
+
+scene.add(cube2);
+cube2.position.set(2, 0, 0);
 scene.add(floor);
 scene.add(cube);
 
@@ -47,6 +52,7 @@ function animate() {
 }
 
 window.addEventListener('keydown', (event) => {
+    if (selectedObject !== null) return;
     if (event.key === 'Enter') {
         camera.position.set(0, 0, 5);
         controls.target.set(0, 0, 0);
@@ -63,21 +69,29 @@ window.addEventListener('click', (event) => {
         return;
     }
 
-    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
-
     const intersects = raycaster.intersectObjects(scene.children, true);
 
-    if (intersects.length > 0) {
+    const visibleIntersect = intersects.find(i => {
+        if (!i.face) return false;
+        const camToPoint = new THREE.Vector3().subVectors(camera.position, i.point).normalize();
+        return i.face.normal.dot(camToPoint) > 0;
+    });
 
-        const selectedObject = intersects[0].object;
-        console.log("You clicked on:", selectedObject);
+    if (visibleIntersect) {
+        const parentObject = visibleIntersect.object.parent;
 
-        if (selectedObject.parent instanceof CubeWithEdges) {
-            console.log("You clicked on the cube!");
-            selectedObject.parent.setEdgeColor(0xff0000);
+        if (parentObject instanceof Floor) return;
+
+        if (selectedObject !== parentObject) {
+            if (selectedObject?.setEdgeColor) selectedObject.setEdgeColor(0xFFFFFF);
+            selectedObject = parentObject;
+            if (selectedObject?.setEdgeColor) selectedObject.setEdgeColor(0xFF0000);
+            console.log("Selected object:", selectedObject);
         }
     }
 });
