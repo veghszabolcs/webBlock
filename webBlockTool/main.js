@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import CubeWithEdges from './CubeWithEdges.js';
-import Floor from './GridFloor.js';
+import Floor from './Floor.js';
 
 /////globals///////
 var activeTool = "cameraTool"; document.getElementById(activeTool).style.backgroundColor = "white"; document.getElementById(activeTool).style.color = "black";
@@ -91,7 +91,6 @@ window.addEventListener('click', (event) => {
             if (selectedObject?.setEdgeColor) selectedObject.setEdgeColor(0xFFFFFF);
             selectedObject = parentObject;
             if (selectedObject?.setEdgeColor) selectedObject.setEdgeColor(0xFF0000);
-            console.log("Selected object:", selectedObject);
         }
     }
 });
@@ -110,5 +109,4 @@ tools.addEventListener('click', (event) => {
             document.getElementById(activeTool).style.color = "black";
         }
     }
-
 });
