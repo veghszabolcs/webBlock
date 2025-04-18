@@ -28,7 +28,7 @@
 }
 
 #tools{
-  justify-content: space-between;
+  justify-content: space-around;
   display: flex;
   left: 50%;
   transform: translateX(-50%);
@@ -40,5 +40,18 @@
   border-radius: 4px;
   padding: 15px;
   user-select: none;
-  pointer-events: none;
+}
+#tools div{
+  text-align: center;
+  width: 75px;
+  border: solid 1px white;
+  border-radius: 4px;
+  padding: 10px;
+}
+#tools div:hover{
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+#tools div:active{
+  background-color: rgba(255, 255, 255, 0.2);
 }
