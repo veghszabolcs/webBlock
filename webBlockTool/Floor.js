@@ -8,7 +8,7 @@ export default class Floor extends THREE.Object3D {
     const FloorMaterial = new THREE.MeshBasicMaterial({ color: 0x888a88, side: THREE.DoubleSide, wireframe: true });
     const FloorMesh = new THREE.Mesh(FloorGeometry, FloorMaterial);
     FloorMesh.rotation.x = Math.PI / 2; 
-    FloorMesh.position.y = -0.5; 
+    FloorMesh.position.y = 0; 
 
     this.add(FloorMesh);
   }

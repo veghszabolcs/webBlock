@@ -15,6 +15,7 @@ export default class CubeWithEdges extends THREE.Object3D {
         this.add(this.edgeLines);
 
         this.userData.selectable = true;
+        this.position.y = 0.5
     }
 
     setColor(newColor) {
@@ -25,9 +26,15 @@ export default class CubeWithEdges extends THREE.Object3D {
         this.edgeLines.material.color.set(newColor);
     }
 
-    highlight() {
-        this.mesh.material.emissive?.set?.(0x3333ff);
-        this.scale.set(1.1, 1.1, 1.1);
+    setSize(size){
+        this.mesh.geometry.dispose();
+        this.mesh.geometry = new THREE.BoxGeometry(size, size, size);
+        this.edgeLines.geometry.dispose();
+        this.edgeLines.geometry = new THREE.EdgesGeometry(this.mesh.geometry);
+    }
+
+    moveVertically(distance) {
+        this.position.y += distance;
     }
 
     reset() {
